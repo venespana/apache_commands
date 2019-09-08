@@ -1,0 +1,35 @@
+#! /bin/bash
+
+HTTP_DIR="/etc/httpd"
+HTTP_DIR_ENABLED="$HTTP_DIR/sites-enabled"
+
+FILE="$1"
+VHOST="$HTTP_DIR_ENABLED/$FILE"
+
+_remove_link() {
+    unlink "$VHOST"
+    
+    if [ -f $VHOST ]; then
+        echo "Falied to remove sym link in $VHOST"
+        exit 2
+    else
+        echo "Vhost sucessfully removed"
+        echo "Please reload the apache server"
+    fi
+}
+
+[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
+
+if [ -z "$1" ]; then 
+    echo "No virtual host passed"
+    exit 2
+fi
+
+if [ -f $VHOST ]; then
+    _remove_link
+else 
+    echo "Site \"$VHOST\" not exist; Please select a valid one"
+    exit 2
+fi
+
+exit 0

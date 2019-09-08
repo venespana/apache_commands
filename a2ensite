@@ -1,0 +1,37 @@
+#! /bin/bash
+
+HTTP_DIR="/etc/httpd"
+HTTP_DIR_AVAILABLE="$HTTP_DIR/sites-available"
+HTTP_DIR_ENABLED="$HTTP_DIR/sites-enabled"
+
+FILE="$1"
+VHOST="$HTTP_DIR_AVAILABLE/$FILE"
+
+_create_link() {
+    SYM_LINK="$HTTP_DIR_ENABLED/$FILE"
+    ln -sf "$VHOST" "$SYM_LINK"
+    
+    if [ -f $SYM_LINK ]; then
+        echo "Vhost sucessfully created"
+        echo "Please reload the apache server"
+    else
+        echo "Falied to create sym link in $SYM_LINK"
+        exit 2
+    fi
+}
+
+[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
+
+if [ -z "$1" ]; then 
+    echo "No virtual host passed"
+    exit 2
+fi
+
+if [ -f $VHOST ]; then
+    _create_link
+else 
+    echo "Site \"$VHOST\" not exist; Please select a valid one"
+    exit 2
+fi
+
+exit 0
