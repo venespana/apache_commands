@@ -3,7 +3,17 @@
 HTTP_DIR="/etc/httpd"
 HTTP_DIR_ENABLED="$HTTP_DIR/sites-enabled"
 
-FILE="$1"
+FILE=
+
+[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
+
+while [ $# -gt 0 ] ; do
+  case $1 in
+    *) FILE=$1 ;;
+  esac
+  shift
+done
+
 VHOST="$HTTP_DIR_ENABLED/$FILE"
 
 _remove_link() {
@@ -14,13 +24,13 @@ _remove_link() {
         exit 2
     else
         echo "Vhost sucessfully removed"
-        echo "Please reload the apache server"
+        echo "Please reload the apache server \"systemctl restart httpd\""
     fi
 }
 
 [ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
 
-if [ -z "$1" ]; then 
+if [ -z "$FILE" ]; then 
     echo "No virtual host passed"
     exit 2
 fi

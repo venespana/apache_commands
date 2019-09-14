@@ -4,7 +4,17 @@ HTTP_DIR="/etc/httpd"
 HTTP_DIR_AVAILABLE="$HTTP_DIR/sites-available"
 HTTP_DIR_ENABLED="$HTTP_DIR/sites-enabled"
 
-FILE="$1"
+FILE=
+
+[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
+
+while [ $# -gt 0 ] ; do
+  case $1 in
+    *) FILE=$1 ;;
+  esac
+  shift
+done
+
 VHOST="$HTTP_DIR_AVAILABLE/$FILE"
 
 _create_link() {
@@ -13,16 +23,14 @@ _create_link() {
     
     if [ -f $SYM_LINK ]; then
         echo "Vhost sucessfully created"
-        echo "Please reload the apache server"
+        echo "Please reload the apache server \"systemctl restart httpd\""
     else
         echo "Falied to create sym link in $SYM_LINK"
         exit 2
     fi
 }
 
-[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
-
-if [ -z "$1" ]; then 
+if [ -z "$FILE" ]; then 
     echo "No virtual host passed"
     exit 2
 fi
