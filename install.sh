@@ -1,7 +1,8 @@
 #! /bin/bash
 
 PATH="$(pwd)"
-INSTALLATION="/etc/httpd/commands"
+HTTP_PATH="/etc/httpd"
+INSTALLATION="$HTTP_PATH/commands"
 COMPLETIONS_PATH="/usr/share/bash-completion/completions"
 
 binPath="/usr/bin"
@@ -26,6 +27,21 @@ function _create_folder {
     fi
 }
 
+function _create_vhost_folder {
+    vhost=( "sites-enabled" "sites-available" )
+    for vhost_folder in ${vhost[@]}; do
+        local folder="$HTTP_PATH/$vhost_folder"
+
+        if [ ! -d $folder ]; then
+            /bin/mkdir $verbose "$folder"
+        else
+            if [ -z "$verbose" ]; then
+                echo "The folder \"$folder\" already exists skipping"
+            fi
+        fi
+    done
+}
+
 function _install_commands {
     # Install commands
     for file in $(/bin/ls -1 "$PATH/commands/"); do
@@ -38,6 +54,8 @@ function _install_commands {
             /bin/install $verbose "$INSTALLATION/$file" "$binPath/$file"
         fi
     done
+
+    _create_vhost_folder
 }
 
 function _set_autocomplete {
