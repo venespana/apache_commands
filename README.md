@@ -53,3 +53,6 @@ It is done by removing created symlinks in "/etc/httpd/sites-enabled"
 Licensed under the MIT License.
 
 Please see [License](./LICENSE) File for more information.
+
+<hr>
+<a href="https://info.flagcounter.com/4SwE"><img src="https://s01.flagcounter.com/count2/4SwE/bg_FFFFFF/txt_000000/border_FFFFFF/columns_5/maxflags_5/viewers_0/labels_1/pageviews_1/flags_0/percent_1/" alt="Flag Counter" border="0"></a>
