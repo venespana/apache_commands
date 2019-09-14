@@ -2,16 +2,12 @@
 
 PATH="$(pwd)"
 INSTALLATION="/etc/httpd/commands"
-PROFILE_PATH="/etc/profile.d"
+COMPLETIONS_PATH="/usr/share/bash-completion/completions"
 
 binPath="/usr/bin"
 verbose=
 
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
-   exit 1
-fi
-
+[ "$(/bin/whoami)" != "root" ] && exec /bin/sudo -- "$0" "$@"
 
 while [ $# -gt 0 ] ; do
   case $1 in
@@ -20,7 +16,6 @@ while [ $# -gt 0 ] ; do
   esac
   shift
 done
-
 
 function _create_folder {
     /bin/mkdir $INSTALLATION
@@ -48,10 +43,8 @@ function _install_commands {
 function _set_autocomplete {
     for file in $(/bin/ls -1 "$PATH/profile/"); do
         /bin/chmod $verbose +x "$PATH/profile/$file"
-        /bin/cp $verbose +x "$PATH/profile/$file" "$PROFILE_PATH"
+        /bin/cp $verbose "$PATH/profile/$file" "$COMPLETIONS_PATH/$file"
     done
-
-    # source /etc/profile
 }
 
 if [ ! -d $INSTALLATION ]; then 
