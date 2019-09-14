@@ -1,6 +1,6 @@
 # apache_commands
 
-Apache base comands like ubuntu in another unix system
+Apache base commands like ubuntu in another unix system
 
 
 ## Installation
